@@ -1,0 +1,21 @@
+project:
+  name: flyinghirsch
+
+paths:
+  data_dir: data
+  artifacts_dir: artifacts
+  reports_dir: reports
+
+dataset:
+  # Put your dataset-specific settings here
+  raw_subdir: raw
+  processed_subdir: processed
+
+train:
+  seed: 42
+  # example placeholders
+  image_size: [224, 224]
+  test_size: 0.2
+
+inference:
+  score_threshold: 0.5
