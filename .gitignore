@@ -35,3 +35,5 @@ artifacts/**
 
 # Raw Data - too much size:
 data/raw/
+
+karim/datasets/
