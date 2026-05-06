@@ -10,7 +10,8 @@ def main():
         split="val",      # use validation split
         imgsz=640,
         batch=16,
-        device="cuda"
+        device="cuda",
+        project="runs/detect/validate"
     )
 
     print(metrics)  # prints mAP, precision, recall, etc.

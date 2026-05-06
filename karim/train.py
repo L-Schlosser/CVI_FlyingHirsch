@@ -10,7 +10,8 @@ def main():
         imgsz=640,
         batch=16,
         device="cuda",   # use "cpu" if no GPU
-        workers=4
+        workers=4,
+        project="runs/detect/train"
     )
 
 if __name__ == "__main__":

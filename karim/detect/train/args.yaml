@@ -107,4 +107,4 @@ auto_augment: randaugment
 erasing: 0.4
 cfg: null
 tracker: botsort.yaml
-save_dir: C:\Data\!Hagenberg\!Hagenberg\Semester4\CVI\Assignments\Project_repo\CVI_FlyingHirsch\runs\detect\train-8
+save_dir: C:\Data\!Hagenberg\!Hagenberg\Semester4\CVI\Assignments\Project_repo\CVI_FlyingHirsch\karim\runs\detect\train-8

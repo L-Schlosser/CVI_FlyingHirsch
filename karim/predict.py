@@ -6,7 +6,8 @@ def main():
     model.predict(
         source="datasets/images/test",
         conf=0.25,
-        save=True
+        save=True,
+        project="runs/detect/predict"
     )
 
     print("Done.")
