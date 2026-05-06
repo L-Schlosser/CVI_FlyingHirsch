@@ -17,15 +17,15 @@ Thumbs.db
 .vscode/
 
 # Data / artifacts
-data/raw/**
-data/interim/**
-data/processed/**
-data/external/**
-!data/**/.gitkeep
-reports/**
-!reports/.gitkeep
-artifacts/**
-!artifacts/.gitkeep
+prototype_first/data/raw/**
+prototype_first/data/interim/**
+prototype_first/data/processed/**
+prototype_first/data/external/**
+!prototype_first/data/**/.gitkeep
+prototype_first/reports/**
+!prototype_first/reports/.gitkeep
+prototype_first/artifacts/**
+!prototype_first/artifacts/.gitkeep
 
 # Local config / secrets
 .env
@@ -34,6 +34,6 @@ artifacts/**
 
 
 # Raw Data - too much size:
-data/raw/
+prototype_first/data/raw/
 
 karim/datasets/
