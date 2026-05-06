@@ -3,7 +3,7 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 .venv/
-venv/
+prototype_first/venv/
 *.pyc
 *.pyd
 *.pyo
@@ -19,13 +19,14 @@ Thumbs.db
 # Data / artifacts
 prototype_first/data/raw/**
 prototype_first/data/interim/**
-prototype_first/data/processed/**
+prototype_first/data/processed
 prototype_first/data/external/**
 !prototype_first/data/**/.gitkeep
 prototype_first/reports/**
 !prototype_first/reports/.gitkeep
 prototype_first/artifacts/**
 !prototype_first/artifacts/.gitkeep
+prototype_first/runs/detect/predict/**
 
 # Local config / secrets
 .env
@@ -37,3 +38,4 @@ prototype_first/artifacts/**
 prototype_first/data/raw/
 
 karim/datasets/
+karim/detect/predict

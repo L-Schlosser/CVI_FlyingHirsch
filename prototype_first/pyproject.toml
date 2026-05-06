@@ -1,0 +1,33 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "flyinghirsch"
+version = "0.1.0"
+description = "Computer Vision project scaffold for CVI FlyingHirsch."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.26",
+  "opencv-python>=4.9",
+  "matplotlib>=3.8",
+  "pandas>=2.2",
+  "tqdm>=4.66",
+  "pyyaml>=6.0",
+  "typer>=0.12",
+  "rich>=13.7",
+  "scikit-learn>=1.4",
+  "ultralytics>=8.2",
+  "supervision>=0.22",
+]
+
+[project.scripts]
+flyinghirsch = "flyinghirsch.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/flyinghirsch"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
