@@ -1,17 +1,17 @@
 from pathlib import Path
-
-DATA_RAW = Path("datasets/raw")
-DATA_PROCESSED = Path("datasets/processed")
-IMAGES_DIR = "images"
-LABELS_DIR = "labels"
-SPLITS = ["train", "val", "test"]
-
-#delete black and blurry images
 import shutil
 import cv2
 import numpy as np
 
-BLACK_PIXEL_THRESHOLD = 0.93  # 93% pixels near black
+# DATA_RAW = Path("datasets/raw")
+# DATA_PROCESSED = Path("datasets/processed")
+# IMAGES_DIR = "images"
+# LABELS_DIR = "labels"
+# SPLITS = ["train", "val", "test"]
+
+
+
+BLACK_PIXEL_THRESHOLD = 0.93
 BLUR_THRESHOLD = 40
 
 def is_mostly_black(image_path: Path, threshold=BLACK_PIXEL_THRESHOLD) -> bool:
