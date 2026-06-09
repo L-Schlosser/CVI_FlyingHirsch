@@ -2,6 +2,7 @@ import os
 import requests
 import zipfile
 from pathlib import Path
+from tqdm import tqdm
 
 DATA_PATH = Path(__file__).parent / ".." / "datasets" / "raw"
 
@@ -21,21 +22,31 @@ def download_zip(zip_url: str, save_path: Path, skip_if_exists: bool = True):
     
     response = requests.get(zip_url, stream=True)
     response.raise_for_status()
-
-    with open(save_path, "wb") as f:
-        for chunk in response.iter_content(chunk_size=8192):
+    
+    total_size = int(response.headers.get("content-length", 0))
+    
+    with (
+        open(save_path, "wb") as f,
+        tqdm(response.iter_content(chunk_size=8192), desc=f"Downloading {save_path.name}", total=total_size) as pbar
+    ):
+        for chunk in pbar:
             f.write(chunk)
-
-    print(f"Downloaded: {save_path}")
+            pbar.update(len(chunk))
     
 def extract_zip(zip_file_path: Path, extract_to: Path, skip_if_exists: bool = True):
     if extract_to.exists() and skip_if_exists:
         print(f"Directory already exists: {extract_to}")
         return
 
-    with zipfile.ZipFile(zip_file_path, "r") as zip_ref:
+    total_size = zipfile.ZipFile(zip_file_path).getinfo(zipfile.ZipFile(zip_file_path).namelist()[0]).file_size
+
+    with (
+        zipfile.ZipFile(zip_file_path, "r") as zip_ref,
+        tqdm(total=total_size, desc=f"Extracting {extract_to.name}") as pbar
+    ):
         zip_ref.extractall(extract_to)
-    print(f"Extracted to: {extract_to}")
+        for member in zip_ref.infolist():
+            pbar.update(member.file_size)
 
 def download_and_extract_zip(data_dir: Path, subdir: str, image_url: str, label_url: str, skip_if_exists: bool = True):
     file_name = "images" if label_url is None else "data"
