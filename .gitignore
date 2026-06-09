@@ -35,7 +35,7 @@ prototype_first/runs/detect/predict/**
 
 
 # Raw Data - too much size:
-prototype_first/data/raw/
-
-karim/datasets/
-karim/detect/predict
+karim/datasets
+*.pt
+karim/detect
+runs/detect
