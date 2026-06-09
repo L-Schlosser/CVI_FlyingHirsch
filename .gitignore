@@ -33,6 +33,7 @@ prototype_first/runs/detect/predict/**
 .env.*
 !.env.example
 
+datasets/
 
 # Raw Data - too much size:
 karim/datasets
