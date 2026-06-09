@@ -2,8 +2,8 @@ from ultralytics import YOLO
 
 def main():
     # start from pretrained model
-    model_name = "yolo11m_pt"
-    model = YOLO("yolo11m.pt")
+    model_name = "yolo26m_pt"
+    model = YOLO("yolo26m.pt")
     status = "preprocessed"
 
     # model.train(
@@ -29,9 +29,9 @@ def main():
         patience=25,
 
         imgsz=1024,
-        batch=8,
+        batch=4,
         device="cuda",
-        workers=12,
+        workers=8,
         lr0=0.0007,
         weight_decay=0.0005,
         # warmup_epochs=5,

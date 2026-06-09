@@ -37,6 +37,7 @@ datasets/
 
 # Raw Data - too much size:
 karim/datasets
+karim/datasets_better_thermal
 *.pt
 karim/detect
 runs/detect
