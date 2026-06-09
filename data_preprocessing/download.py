@@ -40,18 +40,17 @@ def extract_zip(zip_file_path: Path, extract_to: Path, skip_if_exists: bool = Tr
 
 
     os.makedirs(extract_to, exist_ok=True)
-    total_size = zipfile.ZipFile(zip_file_path).getinfo(zipfile.ZipFile(zip_file_path).namelist()[0]).file_size
+    
+    with zipfile.ZipFile(zip_file_path, "r") as zip_ref:
+        total_size = sum(info.file_size for info in zip_ref.infolist())
 
-    with (
-        zipfile.ZipFile(zip_file_path, "r") as zip_ref,
-        tqdm(total=total_size, desc=f"Extracting {extract_to.name}") as pbar
-    ):
-        zip_ref.extractall(extract_to)
-        for member in zip_ref.infolist():
-            pbar.update(member.file_size)
+        with tqdm(total=total_size, unit="B", unit_scale=True, desc="Extracting") as pbar:
+            for info in zip_ref.infolist():
+                zip_ref.extract(info, extract_to)
+                pbar.update(info.file_size)
 
 def download_and_extract_zip(data_dir: Path, subdir: str, image_url: str, label_url: str, skip_if_exists: bool = True):
-    file_name = "images" if label_url is None else "data"
+    file_name = "images" if label_url is not None else "data"
     os.makedirs(data_dir / subdir, exist_ok=True)
     
     zip_file_path = data_dir / subdir / f"{file_name}_file.zip"
