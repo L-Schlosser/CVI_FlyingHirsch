@@ -1,5 +1,8 @@
 ultralytics
+sahi
 opencv-python
 numpy
 pyyaml
 matplotlib
+imagehash
+tqdm

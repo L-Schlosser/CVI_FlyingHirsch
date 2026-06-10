@@ -2,14 +2,14 @@ from pathlib import Path
 import shutil
 
 # =========================
-# CONFIG
+# INFO -> takes the dataset (thermal images combined with rgb) and copies the thermal images / label combination into train/test/val
 # =========================
-SOURCE_LABELS_ROOT = Path("datasets/labels")
-BT_LABELS_ALL = Path("datasets_better_thermal/labels/all")
-BT_IMAGES_ALL = Path("datasets_better_thermal/images/all")
+SOURCE_LABELS_ROOT = Path("datasets/raw_old/labels")
+BT_LABELS_ALL = Path("datasets/raw/labels/all")
+BT_IMAGES_ALL = Path("datasets/raw/images/all")
 
-BT_LABELS_OUT = Path("datasets_better_thermal/labels")
-BT_IMAGES_OUT = Path("datasets_better_thermal/images")
+BT_LABELS_OUT = Path("datasets/raw/labels")
+BT_IMAGES_OUT = Path("datasets/raw/images")
 
 SPLITS = ["train", "val", "test"]
 

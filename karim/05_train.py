@@ -1,61 +1,89 @@
 from ultralytics import YOLO
 
-def main():
-    # start from pretrained model
-    model_name = "yolo26m_pt"
-    model = YOLO("yolo26m.pt")
-    status = "preprocessed"
+from config import PROFILE, PROFILES, TRAIN_PLOTS, best_weights, run_name
 
-    # model.train(
-
-    #     data="data/alfs.yaml",
-    #     epochs=50,
-    #     imgsz=768, #could make to 1024 
-    #     batch=8,   #maybe 8
-    #     device="cuda",   # use "cpu" if no GPU
-    #     workers=12,
-    #     project="runs/detect/train",
-    #     mosaic=0.3,
-    #     mixup=0.0,
-    #     lr0=0.001
-    # )
+# ---------------------------------------------------------------------------
+# YOLO26 profiles (RTX 5070 Laptop, 8 GB VRAM, ~5240 train images)
+#
+# YOLO26 uses STAL for small-object supervision – better for tiny thermal deer.
+# Train at 640-800, validate/predict at 1024 with SAHI (see 06/07 scripts).
+#
+# "fast"     ~3-6 min/epoch
+# "balanced" ~4-8 min/epoch  (recommended)
+# "quality"  ~15-25 min/epoch
+# ---------------------------------------------------------------------------
 
 
-
-    model.train(
+def build_train_args(cfg, *, lr0=1e-4, epochs=None, name=None):
+    """Shared training kwargs for fresh, resume, and phase-2 runs."""
+    return dict(
         data="data/alfs.yaml",
-
-        epochs=50,
-        patience=25,
-
-        imgsz=1024,
-        batch=4,
-        device="cuda",
-        workers=8,
-        lr0=0.0007,
-        weight_decay=0.0005,
-        # warmup_epochs=5,
-
-        # --- augmentation (thermal-specific tuning) ---
-        mosaic=0.15,        # keep low, thermal breaks with mosaic
-        mixup=0.0,          # disable
-        copy_paste=0.1,     # helps small object density
-        degrees=10,
-        translate=0.05,
-        scale=0.4,
+        epochs=epochs or cfg["epochs"],
+        patience=cfg["patience"],
+        imgsz=cfg["imgsz"],
+        batch=cfg["batch"],
+        device=0,
+        workers=4,
+        amp=True,
+        cache="disk",
+        optimizer="AdamW",
+        lr0=lr0,
+        weight_decay=5e-4,
+        cos_lr=True,
+        warmup_epochs=3,
+        degrees=cfg["degrees"],
+        translate=cfg["translate"],
+        scale=cfg["scale"],
         fliplr=0.5,
-
-        # IMPORTANT for thermal:
+        flipud=0.0,
+        mosaic=cfg["mosaic"],
+        close_mosaic=cfg["close_mosaic"],
+        mixup=cfg["mixup"],
+        copy_paste=cfg["copy_paste"],
+        erasing=cfg["erasing"],
         hsv_h=0.0,
         hsv_s=0.0,
         hsv_v=0.0,
-
-        # --- logging / output ---
-        # project="runs/train",
-        name=model_name + "_" + status,
+        auto_augment=None,
+        plots=TRAIN_PLOTS,
+        project="train",
+        name=name or run_name(),
         save=True,
-        cache=True
     )
+
+
+def main():
+    cfg = PROFILES[PROFILE]
+
+    # -----------------------------------------------------------------------
+    # DEFAULT: train from pretrained COCO weights (yolo26s/m/l.pt)
+    # -----------------------------------------------------------------------
+    model = YOLO(cfg["weights"])
+    model.train(**build_train_args(cfg))
+
+    # -----------------------------------------------------------------------
+    # RESUME: continue the same run after crash, Ctrl+C, or early stop
+    # Uses last.pt + restores optimizer state and epoch counter.
+    # Uncomment below and comment out the DEFAULT block above.
+    # -----------------------------------------------------------------------
+    # model = YOLO(f"runs/detect/train/{run_name()}/weights/last.pt")
+    # model.train(resume=True)
+
+    # -----------------------------------------------------------------------
+    # PHASE 2: continue from best.pt after early stop (recommended)
+    # Lower LR helps when mAP plateaued. Saves to a new run folder.
+    # Uncomment below and comment out the DEFAULT block above.
+    # -----------------------------------------------------------------------
+    # model = YOLO(best_weights())
+    # model.train(
+    #     **build_train_args(
+    #         cfg,
+    #         lr0=5e-5,       # half of fresh run; try 1e-5 if still plateauing
+    #         epochs=60,      # extra epochs for phase 2
+    #         name=f"{run_name()}_phase2",
+    #     )
+    # )
+
 
 if __name__ == "__main__":
     main()
