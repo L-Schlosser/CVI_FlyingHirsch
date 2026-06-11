@@ -5,7 +5,7 @@ from pathlib import Path
 import shutil
 from tqdm import tqdm
 
-from const import DATA_PATH
+from const import DATA_PATH, IMAGES_SUBDIR, LABELS_SUBDIR
 
 ALFS_URL = "https://zenodo.org/records/18772136/files/dataset.zip"
 
@@ -34,10 +34,13 @@ def download_zip(zip_url: str, save_path: Path, skip_if_exists: bool = True):
             f.write(chunk)
             pbar.update(len(chunk))
 
-def move_train_to_root(root: Path):
+def move_train_to_root(root: Path, use_base_folder_as_root: bool = False):
     target_parent = None
 
-    for path in root.rglob("train"):
+    root = root.parent if use_base_folder_as_root else root
+    subfolder = (root / "data").rglob("images") if use_base_folder_as_root else root.rglob("train")
+
+    for path in subfolder:
         if path.is_dir():
             target_parent = path.parent
             break
@@ -54,8 +57,10 @@ def move_train_to_root(root: Path):
         target_path = root / item.name
         shutil.move(str(item), str(target_path))
 
+    keep_folders = {'images', 'labels'} if use_base_folder_as_root else {'train', 'val', 'test'}
+
     for item in root.iterdir():
-        if item.is_dir() and item.name not in ['train', 'val', 'test']:
+        if item.is_dir() and item.name not in keep_folders:
             shutil.rmtree(item)
             print(f"Cleaned up empty wrapper folder: {item.name}")
 
@@ -72,26 +77,27 @@ def extract_zip(zip_file_path: Path, extract_to: Path, skip_if_exists: bool = Tr
                 zip_ref.extract(info, extract_to)
                 pbar.update(info.file_size)
     
-    move_train_to_root(extract_to)
-
 def download_and_extract_zip(data_dir: Path, subdir: str, image_url: str, label_url: str, skip_if_exists: bool = True):
-    file_name = "images" if label_url is not None else "data"
+    file_name = IMAGES_SUBDIR if label_url is not None else "data"
     os.makedirs(data_dir / subdir, exist_ok=True)
     
+    uses_single_zip = label_url is None
     zip_file_path = data_dir / subdir / f"{file_name}_file.zip"
     extracted_dir_path = data_dir / subdir / f"{file_name}"
 
-    download_zip(image_url, zip_file_path, skip_if_exists)
-    extract_zip(zip_file_path, extracted_dir_path, skip_if_exists)
+    # download_zip(image_url, zip_file_path, skip_if_exists)
+    # extract_zip(zip_file_path, extracted_dir_path, skip_if_exists)
+    move_train_to_root(extracted_dir_path, use_base_folder_as_root=uses_single_zip)
     
-    if label_url:
-        label_zip_file_path = data_dir / subdir / f"labels_file.zip"
-        label_extracted_dir_path = data_dir / subdir / f"labels"
+    if not uses_single_zip:
+        label_zip_file_path = data_dir / subdir / f"{LABELS_SUBDIR}_file.zip"
+        label_extracted_dir_path = data_dir / subdir / LABELS_SUBDIR
 
         download_zip(label_url, label_zip_file_path, skip_if_exists)
         extract_zip(label_zip_file_path, label_extracted_dir_path, skip_if_exists)
+        move_train_to_root(label_extracted_dir_path)
 
 if __name__ == "__main__":
-    #download_and_extract_zip(DATA_PATH, "alfs_data", ALFS_URL, None)
+    download_and_extract_zip(DATA_PATH, "alfs_data", ALFS_URL, None)
     download_and_extract_zip(DATA_PATH, "rgb_data", RGB_URL, LABEL_RGB_URL)
     download_and_extract_zip(DATA_PATH, "thermal_data", THERMAL_URL, LABELS_THERMAL_URL)

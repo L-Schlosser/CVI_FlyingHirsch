@@ -5,11 +5,11 @@ from pathlib import Path
 import shutil
 from tqdm import tqdm
 
-from const import DATA_PATH
+from const import DATA_PATH, IMAGES_SUBDIR, LABELS_SUBDIR
 
 def remove_images_without_labels(data_dir: Path, subdir: Path) -> int:
-    images_root = data_dir / subdir / "images"
-    labels_root = data_dir / subdir / "labels"
+    images_root = data_dir / subdir / IMAGES_SUBDIR
+    labels_root = data_dir / subdir / LABELS_SUBDIR
 
     image_extensions = {".jpg", ".jpeg"}
     removed = 0
