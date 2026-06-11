@@ -5,7 +5,7 @@ from pathlib import Path
 import shutil
 from tqdm import tqdm
 
-DATA_PATH = Path(__file__).parent / ".." / "datasets" / "raw"
+from const import DATA_PATH
 
 ALFS_URL = "https://zenodo.org/records/18772136/files/dataset.zip"
 
@@ -60,6 +60,10 @@ def move_train_to_root(root: Path):
             print(f"Cleaned up empty wrapper folder: {item.name}")
 
 def extract_zip(zip_file_path: Path, extract_to: Path, skip_if_exists: bool = True):
+    if extract_to.exists() and skip_if_exists:
+        print(f"Directory already exists: {extract_to}")
+        return
+
     with zipfile.ZipFile(zip_file_path, "r") as zip_ref:
         total_size = sum(info.file_size for info in zip_ref.infolist())
 
@@ -87,6 +91,7 @@ def download_and_extract_zip(data_dir: Path, subdir: str, image_url: str, label_
         download_zip(label_url, label_zip_file_path, skip_if_exists)
         extract_zip(label_zip_file_path, label_extracted_dir_path, skip_if_exists)
 
-#download_and_extract_zip(DATA_PATH, "alfs_data", ALFS_URL, None)
-download_and_extract_zip(DATA_PATH, "rgb_data", RGB_URL, LABEL_RGB_URL)
-#download_and_extract_zip(DATA_PATH, "thermal_data", THERMAL_URL, LABELS_THERMAL_URL)
+if __name__ == "__main__":
+    #download_and_extract_zip(DATA_PATH, "alfs_data", ALFS_URL, None)
+    download_and_extract_zip(DATA_PATH, "rgb_data", RGB_URL, LABEL_RGB_URL)
+    download_and_extract_zip(DATA_PATH, "thermal_data", THERMAL_URL, LABELS_THERMAL_URL)
