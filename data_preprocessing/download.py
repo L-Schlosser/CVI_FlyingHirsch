@@ -2,6 +2,7 @@ import os
 import requests
 import zipfile
 from pathlib import Path
+import shutil
 from tqdm import tqdm
 
 DATA_PATH = Path(__file__).parent / ".." / "datasets" / "raw"
@@ -32,14 +33,33 @@ def download_zip(zip_url: str, save_path: Path, skip_if_exists: bool = True):
         for chunk in pbar:
             f.write(chunk)
             pbar.update(len(chunk))
-    
-def extract_zip(zip_file_path: Path, extract_to: Path, skip_if_exists: bool = True):
-    if extract_to.exists() and len(os.listdir(extract_to)) > 0 and skip_if_exists:
-        print(f"Directory already exists: {extract_to}")
+
+def move_train_to_root(root: Path):
+    target_parent = None
+
+    for path in root.rglob("train"):
+        if path.is_dir():
+            target_parent = path.parent
+            break
+
+    if not target_parent:
+        print("Could not find a 'train' folder anywhere in the directory tree.")
         return
 
-    os.makedirs(extract_to, exist_ok=True)
-    
+    if target_parent == root:
+        return
+
+    print(f"Found dataset split folders inside: {target_parent}")
+    for item in target_parent.iterdir():
+        target_path = root / item.name
+        shutil.move(str(item), str(target_path))
+
+    for item in root.iterdir():
+        if item.is_dir() and item.name not in ['train', 'val', 'test']:
+            shutil.rmtree(item)
+            print(f"Cleaned up empty wrapper folder: {item.name}")
+
+def extract_zip(zip_file_path: Path, extract_to: Path, skip_if_exists: bool = True):
     with zipfile.ZipFile(zip_file_path, "r") as zip_ref:
         total_size = sum(info.file_size for info in zip_ref.infolist())
 
@@ -47,24 +67,26 @@ def extract_zip(zip_file_path: Path, extract_to: Path, skip_if_exists: bool = Tr
             for info in zip_ref.infolist():
                 zip_ref.extract(info, extract_to)
                 pbar.update(info.file_size)
+    
+    move_train_to_root(extract_to)
 
 def download_and_extract_zip(data_dir: Path, subdir: str, image_url: str, label_url: str, skip_if_exists: bool = True):
     file_name = "images" if label_url is not None else "data"
     os.makedirs(data_dir / subdir, exist_ok=True)
     
     zip_file_path = data_dir / subdir / f"{file_name}_file.zip"
-    extracted_dir_path = data_dir / subdir / f"{file_name}_files"
+    extracted_dir_path = data_dir / subdir / f"{file_name}"
 
     download_zip(image_url, zip_file_path, skip_if_exists)
     extract_zip(zip_file_path, extracted_dir_path, skip_if_exists)
     
     if label_url:
         label_zip_file_path = data_dir / subdir / f"labels_file.zip"
-        label_extracted_dir_path = data_dir / subdir / f"labels_files"
+        label_extracted_dir_path = data_dir / subdir / f"labels"
 
         download_zip(label_url, label_zip_file_path, skip_if_exists)
         extract_zip(label_zip_file_path, label_extracted_dir_path, skip_if_exists)
 
-download_and_extract_zip(DATA_PATH, "alfs_data", ALFS_URL, None)
+#download_and_extract_zip(DATA_PATH, "alfs_data", ALFS_URL, None)
 download_and_extract_zip(DATA_PATH, "rgb_data", RGB_URL, LABEL_RGB_URL)
-download_and_extract_zip(DATA_PATH, "thermal_data", THERMAL_URL, LABELS_THERMAL_URL)
+#download_and_extract_zip(DATA_PATH, "thermal_data", THERMAL_URL, LABELS_THERMAL_URL)
