@@ -65,7 +65,8 @@ def move_train_to_root(root: Path, use_base_folder_as_root: bool = False):
             print(f"Cleaned up empty wrapper folder: {item.name}")
 
 def extract_zip(zip_file_path: Path, extract_to: Path, skip_if_exists: bool = True):
-    if extract_to.exists() and skip_if_exists:
+    images_path = extract_to.parent / "images" if zip_file_path.name.startswith("images") else extract_to.parent / "labels"
+    if images_path.exists() and images_path.is_dir() and skip_if_exists:
         print(f"Directory already exists: {extract_to}")
         return
 
@@ -85,8 +86,8 @@ def download_and_extract_zip(data_dir: Path, subdir: str, image_url: str, label_
     zip_file_path = data_dir / subdir / f"{file_name}_file.zip"
     extracted_dir_path = data_dir / subdir / f"{file_name}"
 
-    # download_zip(image_url, zip_file_path, skip_if_exists)
-    # extract_zip(zip_file_path, extracted_dir_path, skip_if_exists)
+    download_zip(image_url, zip_file_path, skip_if_exists)
+    extract_zip(zip_file_path, extracted_dir_path, skip_if_exists)
     move_train_to_root(extracted_dir_path, use_base_folder_as_root=uses_single_zip)
     
     if not uses_single_zip:
