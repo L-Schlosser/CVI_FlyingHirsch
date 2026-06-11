@@ -48,7 +48,7 @@ def create_dataset_config(dataset_path):
 
     return config_path
 
-def train_yolo_model(dataset_path, model_size='yolo11l.pt', epochs=100, batch_size=16, img_size=640):    
+def train_yolo_model(dataset_path, model_size='yolo11l.pt', epochs=100, batch_size=16, img_size=1024):    
     if not torch.cuda.is_available():
         raise RuntimeError("CUDA is not available. Please ensure you have a compatible GPU and the correct drivers installed.")
         
@@ -71,7 +71,7 @@ def train_yolo_model(dataset_path, model_size='yolo11l.pt', epochs=100, batch_si
         'exist_ok': True,  # overwrite existing experiment
         'pretrained': True,  # use pretrained weights
         'optimizer': 'AdamW',  # optimizer
-        'lr0': 0.01,  # initial learning rate
+        'lr0': 0.005,  # initial learning rate
         'lrf': 0.1,  # final learning rate factor
         'momentum': 0.937,  # momentum
         'weight_decay': 0.0005,  # weight decay
@@ -82,8 +82,8 @@ def train_yolo_model(dataset_path, model_size='yolo11l.pt', epochs=100, batch_si
         'dfl': 1.5,  # DFL loss gain
         'augment': True,  # apply augmentations
         'mosaic': 1.0,  # mosaic probability
-        'mixup': 0.1,  # mixup probability
-        'copy_paste': 0.1,  # copy paste probability
+        'mixup': 0.0,  # mixup probability                  was 0.1
+        'copy_paste': 0.0,  # copy paste probability        was 0.1
         'val': True,  # validate during training
         'plots': True,  # save training plots
         'verbose': True  # verbose output
