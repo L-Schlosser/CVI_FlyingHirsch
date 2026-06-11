@@ -38,7 +38,6 @@ def extract_zip(zip_file_path: Path, extract_to: Path, skip_if_exists: bool = Tr
         print(f"Directory already exists: {extract_to}")
         return
 
-
     os.makedirs(extract_to, exist_ok=True)
     
     with zipfile.ZipFile(zip_file_path, "r") as zip_ref:
