@@ -4,7 +4,8 @@ train: images/train
 val: images/val
 test: images/test
 
-nc: 12 # number of classes
+# nc: 12 # number of classes
+nc: 8
 
 names:
   0: no_animal
@@ -15,10 +16,10 @@ names:
   5: alpine_ibex
   6: fallow_deer
   7: unknown 
-  8: dog
-  9: bird
-  10: wild_boar
-  11: hybrid_pig
+  # 8: dog
+  # 9: bird
+  # 10: wild_boar
+  # 11: hybrid_pig
 
 
 

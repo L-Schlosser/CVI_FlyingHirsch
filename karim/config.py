@@ -1,6 +1,6 @@
 """Shared training and inference settings."""
 
-PROFILE = "balanced"  # "fast" | "balanced" | "quality"
+PROFILE = "quality"  # "fast" | "balanced" | "quality"
 
 PROFILES = {
     "fast": {
@@ -20,8 +20,8 @@ PROFILES = {
     },
     "balanced": {
         "weights": "yolo26m.pt",
-        "imgsz": 800,
-        "batch": 8,
+        "imgsz": 1024,
+        "batch": 4,
         "epochs": 120,
         "patience": 30,
         "mosaic": 0.35,
@@ -70,7 +70,7 @@ TEST_SOURCE = "datasets/processed/images/test"
 def run_name(profile: str | None = None) -> str:
     profile = profile or PROFILE
     weights = PROFILES[profile]["weights"].replace(".pt", "_pt")
-    return f"{weights}_{profile}_Cursor"
+    return f"{weights}_{profile}_Cursor_8classes"
 
 
 def best_weights(profile: str | None = None) -> str:

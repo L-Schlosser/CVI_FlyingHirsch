@@ -30,7 +30,7 @@ def build_train_args(cfg, *, lr0=1e-4, epochs=None, name=None):
         lr0=lr0,
         weight_decay=5e-4,
         cos_lr=True,
-        warmup_epochs=3,
+        # warmup_epochs=3,
         degrees=cfg["degrees"],
         translate=cfg["translate"],
         scale=cfg["scale"],
@@ -74,7 +74,7 @@ def main():
     # Lower LR helps when mAP plateaued. Saves to a new run folder.
     # Uncomment below and comment out the DEFAULT block above.
     # -----------------------------------------------------------------------
-    # model = YOLO(best_weights())
+    # model = YOLO("runs/detect/train/yolo26s_pt_fast_Cursor_8classes/weights/best.pt")
     # model.train(
     #     **build_train_args(
     #         cfg,
