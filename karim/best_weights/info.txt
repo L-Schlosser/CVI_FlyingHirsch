@@ -1,0 +1,3 @@
+from yolo26m_pt_balanced_cursor_1Class_phase3
+
+used adapted 1 layer

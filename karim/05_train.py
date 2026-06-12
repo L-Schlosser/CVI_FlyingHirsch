@@ -1,3 +1,8 @@
+from xml.parsers.expat import model
+import torch
+import torch.nn as nn
+
+
 from ultralytics import YOLO
 
 from config import PROFILE, PROFILES, TRAIN_PLOTS, best_weights, run_name
@@ -58,31 +63,61 @@ def main():
     # -----------------------------------------------------------------------
     # DEFAULT: train from pretrained COCO weights (yolo26s/m/l.pt)
     # -----------------------------------------------------------------------
-    model = YOLO(cfg["weights"])
-    model.train(**build_train_args(cfg))
+    # model = YOLO(cfg["weights"])
+    # model.train(**build_train_args(cfg))
 
     # -----------------------------------------------------------------------
-    # RESUME: continue the same run after crash, Ctrl+C, or early stop
-    # Uses last.pt + restores optimizer state and epoch counter.
-    # Uncomment below and comment out the DEFAULT block above.
+    # RESUME: use last:
     # -----------------------------------------------------------------------
     # model = YOLO(f"runs/detect/train/{run_name()}/weights/last.pt")
     # model.train(resume=True)
 
     # -----------------------------------------------------------------------
-    # PHASE 2: continue from best.pt after early stop (recommended)
-    # Lower LR helps when mAP plateaued. Saves to a new run folder.
-    # Uncomment below and comment out the DEFAULT block above.
+    # PHASE x: use best:
     # -----------------------------------------------------------------------
-    # model = YOLO("runs/detect/train/yolo26s_pt_fast_Cursor_8classes/weights/best.pt")
-    # model.train(
-    #     **build_train_args(
-    #         cfg,
-    #         lr0=5e-5,       # half of fresh run; try 1e-5 if still plateauing
-    #         epochs=60,      # extra epochs for phase 2
-    #         name=f"{run_name()}_phase2",
+    # model = YOLO("runs/detect/train/yolo26m_pt_balanced_Cursor_1Class_adapt/weights/best.pt")
+    model = YOLO(best_weights())
+    model.train(
+        **build_train_args(
+            cfg,
+            # lr0=5e-5,       # half of fresh run; try 1e-5 if still plateauing
+            # epochs=60,      # extra epochs for phase 2
+            name="yolo26m_pt_balanced_Cursor_1Class_phase3",
+        )
+    )
+
+    # -----------------------------------------------------------------------
+    # ADAPTION: adapt first layer from 3 to 1 channel (thermal)
+    # -----------------------------------------------------------------------
+
+    # model = YOLO(cfg["weights"])
+
+    # #try out:
+    # first = model.model.model[0]
+    # print(first.conv)
+
+    # new_conv = nn.Conv2d(
+    #     in_channels=1,
+    #     out_channels=first.conv.out_channels,
+    #     kernel_size=first.conv.kernel_size,
+    #     stride=first.conv.stride,
+    #     padding=first.conv.padding,
+    #     bias=first.conv.bias is not None
+    # ).to(first.conv.weight.device)
+
+    # print(new_conv)
+    # print(model.model.model[0].conv.in_channels)
+
+    
+    # with torch.no_grad():
+    #     new_conv.weight.copy_(
+    #         first.conv.weight.mean(dim=1, keepdim=True)
     #     )
-    # )
+
+    # model.model.model[0].conv = new_conv
+
+    # model.train(**build_train_args(cfg, name=f"{run_name()}_adapt"))
+
 
 
 if __name__ == "__main__":
