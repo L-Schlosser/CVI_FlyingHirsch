@@ -39,7 +39,7 @@ def main():
     if not image_paths:
         raise FileNotFoundError(f"No images found in {source}")
 
-    out_dir = Path("predict") / f"sahi_{run_name()}"
+    out_dir = Path("runs/detect/predict") / f"sahi_{run_name()}"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     detection_model = AutoDetectionModel.from_pretrained(

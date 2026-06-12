@@ -14,6 +14,7 @@ def main():
         device=0,
         project="validate",
         name=f"validation_{run_name()}",
+        conf=0.001
     )
 
     print(metrics)
