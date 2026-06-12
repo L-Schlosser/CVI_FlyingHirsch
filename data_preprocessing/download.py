@@ -99,6 +99,6 @@ def download_and_extract_zip(data_dir: Path, subdir: str, image_url: str, label_
         move_train_to_root(label_extracted_dir_path)
 
 if __name__ == "__main__":
-    download_and_extract_zip(DATA_PATH, "alfs_data", ALFS_URL, None)
-    download_and_extract_zip(DATA_PATH, "rgb_data", RGB_URL, LABEL_RGB_URL)
+    #download_and_extract_zip(DATA_PATH, "alfs_data", ALFS_URL, None)
+    #download_and_extract_zip(DATA_PATH, "rgb_data", RGB_URL, LABEL_RGB_URL)
     download_and_extract_zip(DATA_PATH, "thermal_data", THERMAL_URL, LABELS_THERMAL_URL)

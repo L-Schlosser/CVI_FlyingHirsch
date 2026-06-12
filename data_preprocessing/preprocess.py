@@ -1,3 +1,4 @@
+from collections import defaultdict
 import os
 import requests
 import zipfile
@@ -114,12 +115,79 @@ def enhance_contrast_clahe(data_dir: Path, subdir: Path) -> None:
 
     print(f"Images processed: {processed}")
 
-def preprocess_data(data_dir: Path, subdir: str) -> None:
+def get_flight_id(filename: str) -> str:
+    return filename.split("_")[0]
+
+def move_files(flight_set, target_split, flights, images_root, labels_root, dry_run=True):
+    for flight_id in flight_set:
+        for img_path in flights[flight_id]:
+            rel_path = img_path.relative_to(images_root)
+            label_path = (labels_root / rel_path).with_suffix(".txt")
+
+            target_img_dir = images_root.parent / target_split / IMAGES_SUBDIR
+            target_lbl_dir = labels_root.parent / target_split / LABELS_SUBDIR
+
+            target_img_path = target_img_dir / rel_path
+            target_lbl_path = target_lbl_dir / rel_path.with_suffix(".txt")
+
+            if dry_run:
+                print(f"[{target_split.upper()}] {img_path}")
+            else:
+                target_img_path.parent.mkdir(parents=True, exist_ok=True)
+                target_lbl_path.parent.mkdir(parents=True, exist_ok=True)
+
+                shutil.move(str(img_path), str(target_img_path))
+
+                if label_path.exists():
+                    shutil.move(str(label_path), str(target_lbl_path))
+
+def update_split(data_dir: Path, subdir: Path, train_percentage: float=0.75, dry_run: bool=True) -> None:
+    images_root = data_dir / subdir / IMAGES_SUBDIR
+    labels_root = data_dir / subdir / LABELS_SUBDIR
+    image_extensions = {".jpg", ".jpeg"}
+
+    flights = defaultdict(list)
+
+    for img_path in images_root.rglob("*"):
+        if img_path.suffix.lower() not in image_extensions:
+            continue
+
+        flight_id = get_flight_id(img_path.name)
+        flights[flight_id].append(img_path)
+
+    print(f"Found {len(flights)} flights")
+
+    flight_ids = list(flights.keys())
+    random.shuffle(flight_ids)
+
+    split_idx = int(len(flight_ids) * train_percentage)
+
+    train_flights = set(flight_ids[:split_idx])
+    val_flights = set(flight_ids[split_idx:])
+
+    print(f"Train flights: {len(train_flights)}")
+    print(f"Val flights: {len(val_flights)}")
+
+    move_files(train_flights, "train", flights, images_root, labels_root, dry_run)
+    move_files(val_flights, "val", flights, images_root, labels_root, dry_run)
+
+    print("\n--- SUMMARY ---")
+    print("Split completed (flight-safe)")
+    print(f"Mode: {'DRY RUN' if dry_run else 'MOVED'}")
+
+
+
+def preprocess_data_before_labeling(data_dir: Path, subdir: str) -> None:
     delete_blurry_images(data_dir, subdir, BLURRY_THRESHOLD, dry_run=False)
-    remove_images_without_labels(data_dir, subdir, KEEP_BACK_PERCENT)
+    #remove_images_without_labels(data_dir, subdir, KEEP_BACK_PERCENT)
+    #enhance_contrast_clahe(data_dir, subdir)
+    #update_split(data_dir, subdir, train_percentage=0.75, dry_run=False)
+
+def preprocess_data_after_labeling(data_dir: Path, subdir: str) -> None:
     enhance_contrast_clahe(data_dir, subdir)
 
 if __name__ == "__main__":
     # preprocess_data(DATA_PATH, "alfs_data")
     # preprocess_data(DATA_PATH, "rgb_data")
-    preprocess_data(DATA_PATH, "thermal_data")
+    preprocess_data_before_labeling(DATA_PATH, "thermal_data")
+    #preprocess_data_after_labeling(DATA_PATH, "thermal_data_labeled")
