@@ -5,9 +5,9 @@ from ultralytics import YOLO
 import torch
 
 DATASET_PATH = Path(__file__).parent / ".." / ".." / "datasets" / "raw" / "thermal_data"
-MODEL_SIZE = 'yolo11s.pt'
+MODEL_SIZE = 'yolo11l.pt'
 EPOCHS = 100
-BATCH_SIZE = 8
+BATCH_SIZE = 4
 IMG_SIZE = 1024
 
 def _verify_directory_exists(path):
@@ -63,7 +63,7 @@ def train_yolo_model(dataset_path, model_size='yolo11l.pt', epochs=100, batch_si
         'batch': batch_size,
         'imgsz': img_size,
         'device': "cuda",
-        'patience': 50,  # early stopping patience
+        'patience': 30,  # early stopping patience
         'save_period': 10,  # save model every 10 epochs
         'workers': 8,  # number of dataloader workers
         'project': 'runs/detect',  # project directory
@@ -87,8 +87,8 @@ def train_yolo_model(dataset_path, model_size='yolo11l.pt', epochs=100, batch_si
         # 'copy_paste': 0.0,  # copy paste probability        was 0.1
 
         # --- FIXED THERMAL REGULARIZATION ---
-        'mosaic': 0.6,           # Bring back partially to assist with small object scale
-        'close_mosaic': 10,      # CRUCIAL: Disables mosaic for the final 10 epochs to clean up edge noise
+        'mosaic': 0.8,           # Bring back partially to assist with small object scale
+        'close_mosaic': 15,      # CRUCIAL: Disables mosaic for the final 10 epochs to clean up edge noise
         'mixup': 0.15,            # Keep to assist with small object scale and occlusion
         'copy_paste': 0.15,        # Keep to assist with small object scale and occlusion
         
