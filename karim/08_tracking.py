@@ -3,6 +3,12 @@ import cv2
 from ultralytics import YOLO
 import numpy as np
 
+
+
+#tracking animal with background infos
+#make video
+
+
 from config import best_weights, TEST_SOURCE, run_name, MODEL_NAME, BEST_WEIGHTS
 
 TRACK_NUMBER = "162"

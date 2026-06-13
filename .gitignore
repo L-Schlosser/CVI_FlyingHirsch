@@ -42,5 +42,5 @@ karim/datasets_better_thermal
 karim/runs/detect/predict
 karim/runs/detect/validate
 karim/runs/detect/train
-karim/runs/detect/track/track_yolo26m*
+karim/runs/detect/track
 runs/detect
