@@ -1,0 +1,3 @@
+from yolo26l_annotated
+
+used adapted 1 layer

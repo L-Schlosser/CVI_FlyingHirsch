@@ -1,24 +1,27 @@
-path: datasets/processed
+path: datasets/annotated
 
-train: images/train
+train: images/train #add 2
 val: images/val
 test: images/test
 
-nc: 12 # number of classes
+# nc: 12 # number of classes
+# nc: 8
+nc : 1  #second approach
+# ch : 1
 
 names:
-  0: no_animal
-  1: red_deer
-  2: roe_deer
-  3: chamois
-  4: human
-  5: alpine_ibex
-  6: fallow_deer
-  7: unknown 
-  8: dog
-  9: bird
-  10: wild_boar
-  11: hybrid_pig
+  0: animal #no animal
+  # 1: red_deer
+  # 2: roe_deer
+  # 3: chamois
+  # 4: human
+  # 5: alpine_ibex
+  # 6: fallow_deer
+  # 7: unknown 
+  # 8: dog
+  # 9: bird
+  # 10: wild_boar
+  # 11: hybrid_pig
 
 
 

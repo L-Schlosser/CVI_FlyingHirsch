@@ -11,7 +11,7 @@ BT_IMAGES_ALL = Path("datasets/raw/images/all")
 BT_LABELS_OUT = Path("datasets/raw/labels")
 BT_IMAGES_OUT = Path("datasets/raw/images")
 
-SPLITS = ["train", "val", "test"]
+SPLITS = ["train2", "val2", "test2"]
 
 
 def read_lines(path: Path):
@@ -70,6 +70,7 @@ def main():
             # write output label
             write_lines(out_label_dir / filename, new_lines)
 
+            # shutil.copy2(bt_label_path, out_label_dir / bt_label_path.name)
             # copy image
             shutil.copy2(bt_img_path_jpg, out_img_dir / bt_img_path_jpg.name)
 

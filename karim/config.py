@@ -20,13 +20,13 @@ PROFILES = {
     },
     "balanced": {
         "weights": "yolo26m.pt",
-        "imgsz": 800,
-        "batch": 8,
+        "imgsz": 1024,
+        "batch": 4,
         "epochs": 120,
         "patience": 30,
-        "mosaic": 0.35,
+        "mosaic": 0.5, #0.35
         "mixup": 0.05,
-        "copy_paste": 0.1,
+        "copy_paste": 0.0, #0.1
         "erasing": 0.1,
         "degrees": 15.0,
         "translate": 0.08,
@@ -36,7 +36,7 @@ PROFILES = {
     "quality": {
         "weights": "yolo26l.pt",
         "imgsz": 1024,
-        "batch": 4,
+        "batch": 5,
         "epochs": 150,
         "patience": 40,
         "mosaic": 0.4,
@@ -51,7 +51,7 @@ PROFILES = {
 }
 
 # Training plots (val_batch0_labels.jpg, val_batch0_pred.jpg, results.png, etc.)
-TRAIN_PLOTS = True  # set False to save ~1-2 min/epoch
+TRAIN_PLOTS = False  # set False to save ~1-2 min/epoch
 
 # Validation: train at 640-800, validate at native resolution
 VAL_IMGSZ = 1024
@@ -64,14 +64,21 @@ SAHI_CONF = 0.15
 SAHI_USE_CLAHE = True  # contrast boost per tile at inference only
 
 DATA_YAML = "data/alfs.yaml"
-TEST_SOURCE = "datasets/processed/images/test"
+TEST_SOURCE = "datasets/processed/images/test2"
 
+
+##BEST WEIGHTS:
+BEST_WEIGHTS = "best_weights/best.pt"
+MODEL_NAME = "yolo26l_annotated"
 
 def run_name(profile: str | None = None) -> str:
     profile = profile or PROFILE
     weights = PROFILES[profile]["weights"].replace(".pt", "_pt")
-    return f"{weights}_{profile}_Cursor"
+    return f"{weights}_{profile}_Annotated"
 
 
 def best_weights(profile: str | None = None) -> str:
-    return f"runs/detect/train/{run_name(profile)}/weights/best.pt"
+    # return f"runs/detect/train/{run_name(profile)}/weights/best.pt"
+    return f"best_weights/best.pt"
+
+
