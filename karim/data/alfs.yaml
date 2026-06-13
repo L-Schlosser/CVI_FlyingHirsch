@@ -1,13 +1,13 @@
-path: datasets/processed
+path: datasets/annotated
 
-train: images/train2 #add 2
-val: images/val2
-test: images/test2
+train: images/train #add 2
+val: images/val
+test: images/test
 
 # nc: 12 # number of classes
 # nc: 8
 nc : 1  #second approach
-ch : 1
+# ch : 1
 
 names:
   0: animal #no animal

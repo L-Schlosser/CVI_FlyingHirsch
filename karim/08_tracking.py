@@ -3,13 +3,13 @@ import cv2
 from ultralytics import YOLO
 import numpy as np
 
-from config import best_weights, TEST_SOURCE, run_name
+from config import best_weights, TEST_SOURCE, run_name, MODEL_NAME, BEST_WEIGHTS
 
-TRACK_NUMBER = "282"
+TRACK_NUMBER = "162"
 TEST_IMGES = "datasets/processed/images/track_test" + "/" + TRACK_NUMBER
 
 def main():
-    weights = best_weights()
+    weights = BEST_WEIGHTS
 
     model = YOLO(weights)
 
@@ -19,7 +19,7 @@ def main():
     if not image_paths:
         raise FileNotFoundError("No images found")
 
-    out_dir = Path("runs/detect/track") / f"track_{run_name()}_{TRACK_NUMBER}"
+    out_dir = Path("runs/detect/track") / f"track_{MODEL_NAME}_{TRACK_NUMBER}"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     trajectories = {}  # id -> list of (x,y)
