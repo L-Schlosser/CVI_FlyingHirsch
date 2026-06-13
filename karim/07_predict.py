@@ -15,6 +15,8 @@ from config import (
     TEST_SOURCE,
     best_weights,
     run_name,
+    BEST_WEIGHTS,
+    MODEL_NAME,
 )
 
 
@@ -27,7 +29,7 @@ def preprocess_thermal(image_bgr):
 
 
 def main():
-    weights = best_weights()
+    weights = BEST_WEIGHTS
     if not Path(weights).exists():
         raise FileNotFoundError(
             f"Model not found: {weights}\n"
@@ -39,7 +41,7 @@ def main():
     if not image_paths:
         raise FileNotFoundError(f"No images found in {source}")
 
-    out_dir = Path("runs/detect/predict") / f"sahi_{run_name()}"
+    out_dir = Path("runs/detect/predict") / f"sahi_{MODEL_NAME}"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     detection_model = AutoDetectionModel.from_pretrained(

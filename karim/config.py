@@ -1,6 +1,6 @@
 """Shared training and inference settings."""
 
-PROFILE = "quality"  # "fast" | "balanced" | "quality"
+PROFILE = "balanced"  # "fast" | "balanced" | "quality"
 
 PROFILES = {
     "fast": {
@@ -24,9 +24,9 @@ PROFILES = {
         "batch": 4,
         "epochs": 120,
         "patience": 30,
-        "mosaic": 0.35,
+        "mosaic": 0.5, #0.35
         "mixup": 0.05,
-        "copy_paste": 0.1,
+        "copy_paste": 0.0, #0.1
         "erasing": 0.1,
         "degrees": 15.0,
         "translate": 0.08,
@@ -67,12 +67,18 @@ DATA_YAML = "data/alfs.yaml"
 TEST_SOURCE = "datasets/processed/images/test2"
 
 
+##BEST WEIGHTS:
+BEST_WEIGHTS = "best_weights/best.pt"
+MODEL_NAME = "yolo26l_annotated"
+
 def run_name(profile: str | None = None) -> str:
     profile = profile or PROFILE
     weights = PROFILES[profile]["weights"].replace(".pt", "_pt")
-    return f"{weights}_{profile}_Cursor_1Class"
+    return f"{weights}_{profile}_Annotated"
 
 
 def best_weights(profile: str | None = None) -> str:
     # return f"runs/detect/train/{run_name(profile)}/weights/best.pt"
     return f"best_weights/best.pt"
+
+
