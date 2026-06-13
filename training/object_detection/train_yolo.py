@@ -6,9 +6,9 @@ import torch
 
 DATASET_PATH = Path(__file__).parent / ".." / ".." / "datasets" / "raw" / "thermal_data"
 MODEL_SIZE = 'yolo11s.pt'
-EPOCHS = 50
+EPOCHS = 100
 BATCH_SIZE = 8
-IMG_SIZE = 960
+IMG_SIZE = 1024
 
 def _verify_directory_exists(path):
     if not os.path.exists(path):
@@ -77,16 +77,37 @@ def train_yolo_model(dataset_path, model_size='yolo11l.pt', epochs=100, batch_si
         'weight_decay': 0.0005,  # weight decay
         'warmup_epochs': 3,  # warmup epochs
         'warmup_momentum': 0.8,  # warmup momentum
-        'box': 7.5,  # box loss gain
-        'cls': 0.5,  # class loss gain
+        'box': 3.0,  # box loss gain
+        'cls': 0.2,  # class loss gain
         'dfl': 1.5,  # DFL loss gain
         'augment': True,  # apply augmentations
-        'mosaic': 1.0,  # mosaic probability
-        'mixup': 0.0,  # mixup probability                  was 0.1
-        'copy_paste': 0.0,  # copy paste probability        was 0.1
+
+        # 'mosaic': 1.0,  # mosaic probability
+        # 'mixup': 0.0,  # mixup probability                  was 0.1
+        # 'copy_paste': 0.0,  # copy paste probability        was 0.1
+
+        # --- FIXED THERMAL REGULARIZATION ---
+        'mosaic': 0.6,           # Bring back partially to assist with small object scale
+        'close_mosaic': 10,      # CRUCIAL: Disables mosaic for the final 10 epochs to clean up edge noise
+        'mixup': 0.15,            # Keep to assist with small object scale and occlusion
+        'copy_paste': 0.15,        # Keep to assist with small object scale and occlusion
+        
+        # --- SPATIAL VARIATION (Fights Overfitting) ---
+        'scale': 0.6,            # Zooms in/out randomly to handle distance variation
+        'translate': 0.1,        # Shifts images to handle framing variation
+        'degrees': 15.0,         # Rotates images
+        'fliplr': 0.5,           
+        
+        # --- COLOR/VAL VARIATION ---
+        'hsv_h': 0.0,            # Keep off
+        'hsv_s': 0.0,            # Keep off
+        'hsv_v': 0.5,            # High value to simulate varying sensor gains/thermal contrast
+
         'val': True,  # validate during training
         'plots': True,  # save training plots
-        'verbose': True  # verbose output
+        'verbose': True,  # verbose output
+
+        'single_cls': True,  # treat all objects as a single class
     }
     
     print("Starting training...")
