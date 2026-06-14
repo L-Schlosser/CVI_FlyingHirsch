@@ -24,10 +24,10 @@ def build_train_args(name_addition:str|None = None):
         data="data/alfs.yaml",
         epochs=100,
         patience=50,
-        imgsz=1024,
-        batch=4,
+        imgsz=768,
+        batch=6,
         device=0,              # equivalent to "cuda"
-        workers=4,
+        workers=12,
         amp=True,
 
         optimizer="AdamW",
@@ -39,64 +39,31 @@ def build_train_args(name_addition:str|None = None):
         warmup_epochs=3,
         warmup_momentum=0.8,
 
-        box=7.5,
-        cls=0.5,
-        dfl=1.5,
+        #Augmentation
+        mosaic=0.8,
+        close_mosaic=15,
+        copy_paste=0.05,
+        scale=0.5,
+        degrees=20,
+        translate=0.1,
 
-        augment=True,
+        # thermal:
+        hsv_h=0.0,
+        hsv_s=0.0,
+        hsv_v=0.5,
 
-        mosaic=1.0,
-        mixup=0.0,
-        copy_paste=0.0,
 
         val=True,
-        plots=False,
+        plots=True,
         verbose=True,
 
         save_period=10,
-        pretrained=True,
-
         project="train",
-        name="yolo26l_annotated",
+        name="yolo26l_annotated-3_phase4",
         save=True,
     )
-# def build_train_args(cfg, *, lr0=0.001, epochs=None, name=None):
-#     """Shared training kwargs for fresh, resume, and phase-2 runs."""
-#     return dict(
-#         data="data/alfs.yaml",
-#         epochs=epochs or cfg["epochs"],
-#         patience=cfg["patience"],
-#         imgsz=cfg["imgsz"],
-#         batch=cfg["batch"],
-#         device=0,
-#         workers=4,
-#         amp=True,
-#         cache="disk",
-#         optimizer="AdamW",
-#         lr0=lr0,
-#         lrf=0.1,
-#         weight_decay=5e-4,
-#         cos_lr=True,
-#         # warmup_epochs=3,
-#         degrees=cfg["degrees"],
-#         translate=cfg["translate"],
-#         scale=cfg["scale"],
-#         fliplr=0.5,
-#         flipud=0.0,
-#         mosaic=cfg["mosaic"],
-#         close_mosaic=cfg["close_mosaic"],
-#         mixup=cfg["mixup"],
-#         copy_paste=cfg["copy_paste"],
-#         erasing=cfg["erasing"],
-#         hsv_h=0.0,
-#         hsv_s=0.0,
-#         hsv_v=0.0,
-#         auto_augment=None,
-#         plots=TRAIN_PLOTS,
-#         project="train",
-#         name=name or run_name(),
-#         save=True,
-#     )
+
+
 
 
 def main():
@@ -105,27 +72,14 @@ def main():
     # -----------------------------------------------------------------------
     # DEFAULT: train from pretrained COCO weights (yolo26s/m/l.pt)
     # -----------------------------------------------------------------------
-    model = YOLO("yolo26l.pt")
-    model.train(**build_train_args())
-
-    # -----------------------------------------------------------------------
-    # RESUME: use last:
-    # -----------------------------------------------------------------------
-    # model = YOLO(f"runs/detect/train/{run_name()}/weights/last.pt")
-    # model.train(resume=True)
-
+    # model = YOLO("yolo26l.pt")
+    # model.train(**build_train_args())
     # -----------------------------------------------------------------------
     # PHASE x: use best:
     # -----------------------------------------------------------------------
     # model = YOLO("runs/detect/train/yolo26l_annotated/weights/best.pt")
-    # model = YOLO(BEST_WEIGHTS)
-    # # model = YOLO(best_weights())
-    # model.train(**build_train_args())
-        #     cfg,
-        #     # lr0=5e-5,       # half of fresh run; try 1e-5 if still plateauing
-        #     # epochs=60,      # extra epochs for phase 2
-        #     name=MODEL_NAME
-        # )
+    model = YOLO(BEST_WEIGHTS)
+    model.train(**build_train_args())
 
     # -----------------------------------------------------------------------
     # ADAPTION: adapt first layer from 3 to 1 channel (thermal)

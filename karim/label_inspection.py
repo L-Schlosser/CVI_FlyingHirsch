@@ -1,7 +1,7 @@
 import cv2
 import glob
 
-label_paths = glob.glob("datasets/processed/labels/train/*.txt")
+label_paths = glob.glob("datasets/raw/labels/train2/*.txt")
 
 areas = []
 
