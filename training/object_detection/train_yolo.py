@@ -5,9 +5,9 @@ from ultralytics import YOLO
 import torch
 
 DATASET_PATH = Path(__file__).parent / ".." / ".." / "datasets" / "raw" / "thermal_data"
-MODEL_SIZE = 'yolo11l.pt'
-EPOCHS = 100
-BATCH_SIZE = 4
+MODEL_SIZE = 'yolo26s.pt'
+EPOCHS = 70
+BATCH_SIZE = 8
 IMG_SIZE = 1024
 
 def _verify_directory_exists(path):
@@ -48,7 +48,7 @@ def create_dataset_config(dataset_path):
 
     return config_path
 
-def train_yolo_model(dataset_path, model_size='yolo11l.pt', epochs=100, batch_size=16, img_size=640):    
+def train_yolo_model(dataset_path, model_size='yolo11l.pt', epochs=100, batch_size=16, img_size=1024):    
     if not torch.cuda.is_available():
         raise RuntimeError("CUDA is not available. Please ensure you have a compatible GPU and the correct drivers installed.")
         
@@ -63,45 +63,37 @@ def train_yolo_model(dataset_path, model_size='yolo11l.pt', epochs=100, batch_si
         'batch': batch_size,
         'imgsz': img_size,
         'device': "cuda",
-        'patience': 30,  # early stopping patience
+        'patience': 20,  # early stopping patience
         'save_period': 10,  # save model every 10 epochs
         'workers': 8,  # number of dataloader workers
         'project': 'runs/detect',  # project directory
         'name': 'ir_animal_detection',  # experiment name
         'exist_ok': True,  # overwrite existing experiment
         'pretrained': True,  # use pretrained weights
-        'optimizer': 'AdamW',  # optimizer
-        'lr0': 0.001,  # initial learning rate
-        'lrf': 0.1,  # final learning rate factor
-        'momentum': 0.937,  # momentum
-        'weight_decay': 0.0005,  # weight decay
-        'warmup_epochs': 3,  # warmup epochs
-        'warmup_momentum': 0.8,  # warmup momentum
-        'box': 3.0,  # box loss gain
-        'cls': 0.2,  # class loss gain
-        'dfl': 1.5,  # DFL loss gain
-        'augment': True,  # apply augmentations
+        'optimizer': 'MuSGD',
+        'lr0': 0.00038,
+        'lrf': 0.882,
+        'momentum': 0.948,
+        'weight_decay': 0.00027,
+        'warmup_epochs': 0.98,
 
-        # 'mosaic': 1.0,  # mosaic probability
-        # 'mixup': 0.0,  # mixup probability                  was 0.1
-        # 'copy_paste': 0.0,  # copy paste probability        was 0.1
+        'box': 9.83,
+        'cls': 0.2,
+        'dfl': 0.96,
 
-        # --- FIXED THERMAL REGULARIZATION ---
-        'mosaic': 0.8,           # Bring back partially to assist with small object scale
-        'close_mosaic': 15,      # CRUCIAL: Disables mosaic for the final 10 epochs to clean up edge noise
-        'mixup': 0.15,            # Keep to assist with small object scale and occlusion
-        'copy_paste': 0.15,        # Keep to assist with small object scale and occlusion
-        
-        # --- SPATIAL VARIATION (Fights Overfitting) ---
-        'scale': 0.6,            # Zooms in/out randomly to handle distance variation
-        'translate': 0.1,        # Shifts images to handle framing variation
-        'degrees': 15.0,         # Rotates images
-        'fliplr': 0.5,           
-        
-        # --- COLOR/VAL VARIATION ---
-        'hsv_h': 0.0,            # Keep off
-        'hsv_s': 0.0,            # Keep off
-        'hsv_v': 0.5,            # High value to simulate varying sensor gains/thermal contrast
+        'augment': True,
+        'mosaic': 0.992,
+        'mixup': 0.05,
+        'copy_paste': 0.404,
+        'scale': 0.9,
+        'fliplr': 0.304,
+        'degrees': 0.0,
+        'shear': 0.0,
+        'translate': 0.275,
+
+        'hsv_h': 0.0,
+        'hsv_s': 0.0,
+        'hsv_v': 0.2,
 
         'val': True,  # validate during training
         'plots': True,  # save training plots
