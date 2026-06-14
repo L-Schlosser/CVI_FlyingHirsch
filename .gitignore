@@ -39,6 +39,9 @@ datasets/
 karim/datasets
 karim/datasets_better_thermal
 *.pt
-karim/detect
+karim/runs/detect/predict
+karim/runs/detect/validate
+karim/runs/detect/train
+karim/runs/detect/track
 runs/detect
 karim/runs

@@ -105,8 +105,8 @@ def main():
     # -----------------------------------------------------------------------
     # DEFAULT: train from pretrained COCO weights (yolo26s/m/l.pt)
     # -----------------------------------------------------------------------
-    # model = YOLO("yolo26l.pt")
-    # model.train(**build_train_args())
+    model = YOLO("yolo26l.pt")
+    model.train(**build_train_args())
 
     # -----------------------------------------------------------------------
     # RESUME: use last:
@@ -118,9 +118,9 @@ def main():
     # PHASE x: use best:
     # -----------------------------------------------------------------------
     # model = YOLO("runs/detect/train/yolo26l_annotated/weights/best.pt")
-    model = YOLO(BEST_WEIGHTS)
-    # model = YOLO(best_weights())
-    model.train(**build_train_args())
+    # model = YOLO(BEST_WEIGHTS)
+    # # model = YOLO(best_weights())
+    # model.train(**build_train_args())
         #     cfg,
         #     # lr0=5e-5,       # half of fresh run; try 1e-5 if still plateauing
         #     # epochs=60,      # extra epochs for phase 2
