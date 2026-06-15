@@ -1,0 +1,16 @@
+# BoT-SORT for stabilized thermal drone sequences.
+# GMC is off — camera motion is already removed during stabilization.
+
+tracker_type: botsort
+track_high_thresh: 0.3
+track_low_thresh: 0.1
+new_track_thresh: 0.4    # Lowered: keeps track alive through thermal flicker
+track_buffer: 60         # Increased: drone jumps can cause temporary loss
+match_thresh: 0.95        # Increased: stricter matching to avoid ID switches
+proximity_thresh: 0.7
+appearance_thresh: 0.25
+with_reid: False          # Set False if your thermal images are too noisy for ReID
+# cmc_method: 'ecc'        # 'ecc' is generally more robust for thermal than 'sparseOptFlow' 
+model: auto
+fuse_score: True
+gmc_method: None        # 'ecc' is generally more robust for thermal than 'sparseOptFlow'
