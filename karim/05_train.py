@@ -23,11 +23,11 @@ def build_train_args(name_addition:str|None = None):
     return dict(
         data="data/alfs.yaml",
         epochs=100,
-        patience=50,
-        imgsz=768,
-        batch=6,
+        patience=30,
+        imgsz=1024,
+        batch=4,
         device=0,              # equivalent to "cuda"
-        workers=12,
+        workers=8,
         amp=True,
 
         optimizer="AdamW",

@@ -15,17 +15,17 @@ from ultralytics import YOLO
 from config import BEST_WEIGHTS, MODEL_NAME, VAL_IMGSZ
 
 # --- sequence ----------------------------------------------------------------
-TRACK_NUMBER = "276"
-TEST_IMAGES = f"datasets/processed/images/track_test/{TRACK_NUMBER}"
-REFERENCE_FRAME = "276_5233.jpg"  # None -> first image
+# TRACK_NUMBER = "276"
+# TEST_IMAGES = f"datasets/processed/images/track_test/{TRACK_NUMBER}"
+# REFERENCE_FRAME = "276_5233.jpg"  # None -> first image
 
 # TRACK_NUMBER = "196"
 # TEST_IMAGES = f"datasets/processed/images/track_test/{TRACK_NUMBER}"
 # REFERENCE_FRAME = "196_7584.jpg"  # None -> first image
 
-# TRACK_NUMBER = "10" #"276_3"
-# TEST_IMAGES = f"datasets/processed/images/track_test/{TRACK_NUMBER}"
-# REFERENCE_FRAME = "10_3158.jpg" #"276_5233.jpg"  # None -> first image
+TRACK_NUMBER = "10" #"276_3"
+TEST_IMAGES = f"datasets/processed/images/track_test/{TRACK_NUMBER}"
+REFERENCE_FRAME = "10_3158.jpg" #"276_5233.jpg"  # None -> first image
 
 # --- stabilization -----------------------------------------------------------
 ORB_FEATURES = 5000
