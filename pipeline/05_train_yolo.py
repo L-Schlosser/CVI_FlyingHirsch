@@ -4,7 +4,7 @@ import yaml
 from ultralytics import YOLO
 import torch
 
-DATASET_PATH = Path(__file__).parent / ".." / ".." / "datasets" / "raw" / "thermal_data"
+DATASET_PATH = Path(__file__).parents[1] / "datasets" / "raw" / "thermal_data"
 MODEL_SIZE = 'yolo26s.pt'
 EPOCHS = 70
 BATCH_SIZE = 8
