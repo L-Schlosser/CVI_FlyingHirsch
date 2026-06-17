@@ -36,16 +36,8 @@ prototype_first/runs/detect/predict/**
 datasets/
 
 # Raw Data - too much size:
-karim/datasets
-karim/datasets_better_thermal
-*.pt
-karim/runs/detect/predict
-karim/runs/detect/validate
-karim/runs/detect/train
-karim/runs/detect/track
-runs/detect
-karim/runs
 
 */datasets
 */datasets_better_thermal
 */runs/detect
+*yolo*.pt
