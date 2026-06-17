@@ -64,13 +64,13 @@ SAHI_CONF = 0.15
 SAHI_USE_CLAHE = True  # contrast boost per tile at inference only
 
 DATA_YAML = "data/alfs.yaml"
-TEST_SOURCE = "datasets/processed/images/test2"
+TEST_SOURCE = "datasets/annotated/images/test"
 
 
 ##BEST WEIGHTS:
 BEST_WEIGHTS = "best_weights/best.pt"
 
-MODEL_NAME = "yolo26l_annotated"
+MODEL_NAME = "yolo26s_annotated"
 
 def run_name(profile: str | None = None) -> str:
     profile = profile or PROFILE

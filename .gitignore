@@ -39,5 +39,7 @@ datasets/
 
 */datasets
 */datasets_better_thermal
-*/runs/detect
+*/runs/detect/*/old
+*/runs/detect/**/*.pt
+*/runs/detect/predict/sahi*/*.jpg
 *yolo*.pt
