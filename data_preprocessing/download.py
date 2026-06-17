@@ -15,6 +15,7 @@ LABEL_RGB_URL = "https://zenodo.org/records/19034999/files/labels_rgb.zip"
 THERMAL_URL = "https://zenodo.org/records/19034999/files/images_thermal.zip"
 LABELS_THERMAL_URL = "https://zenodo.org/records/19034999/files/labels_thermal_merged.zip"
 
+LABELLED_IMAGES_URL = "https://zenodo.org/records/19034999/files/images_thermal.zip"
 
 def download_zip(zip_url: str, save_path: Path, skip_if_exists: bool = True):
     if save_path.exists() and skip_if_exists:
