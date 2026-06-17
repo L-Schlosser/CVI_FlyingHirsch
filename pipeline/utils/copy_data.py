@@ -3,6 +3,7 @@ import shutil
 
 # =========================
 # INFO -> takes the dataset (thermal images combined with rgb) and copies the thermal images / label combination into train/test/val
+# = it reproduces the same split as before and convertes all 0 classes (animal) into the real class (animal type)
 # =========================
 SOURCE_LABELS_ROOT = Path("datasets/raw_old/labels")
 BT_LABELS_ALL = Path("datasets/raw/labels/all")

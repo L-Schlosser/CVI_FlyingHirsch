@@ -1,0 +1,3 @@
+Since the prediction images are too big -> not uploaded to git
+
+Please use the already runned 07b_visualizePredictions folder for insights
