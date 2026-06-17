@@ -2,7 +2,8 @@ from pathlib import Path
 import shutil
 
 # =========================
-# INFO -> takes the dataset (thermal images combined with rgb) and copies the thermal images / label combination into train/test/val
+# INFO -> takes the dataset (thermal images combined with rgb) and copies the thermal images / label combination into train/test/val 
+# = it reproduces the same split as before - but with other image quality and other labels (only 1 class)
 # =========================
 SOURCE_LABELS_ROOT = Path("datasets/raw_old/labels")
 BT_LABELS_ALL = Path("datasets/raw/labels/all")
@@ -33,10 +34,6 @@ def main():
         out_label_dir.mkdir(parents=True, exist_ok=True)
         out_img_dir.mkdir(parents=True, exist_ok=True)
 
-        # if not src_dir.exists():
-        #     print(f"[WARN] Missing source split: {src_dir}")
-        #     continue
-
         for src_label_path in src_dir.glob("*.txt"):
             filename = src_label_path.name
 
@@ -49,27 +46,6 @@ def main():
             if not bt_img_path_jpg.exists():
                 continue
 
-        #     src_lines = read_lines(src_label_path)
-        #     bt_lines = read_lines(bt_label_path)
-
-        #     # safety check: same number of boxes
-        #     if len(src_lines) != len(bt_lines):
-        #         print(f"[SKIP mismatch lines] {filename}")
-        #         continue
-
-        #     new_lines = []
-
-        #     for src_line, bt_line in zip(src_lines, bt_lines):
-        #         src_parts = src_line.split()
-        #         bt_parts = bt_line.split()
-
-        #         # replace class id only
-        #         bt_parts[0] = src_parts[0]
-
-        #         new_lines.append(" ".join(bt_parts))
-
-            # write output label
-            # write_lines(out_label_dir / filename, new_lines)
 
             shutil.copy2(bt_label_path, out_label_dir / bt_label_path.name)
             # copy image
