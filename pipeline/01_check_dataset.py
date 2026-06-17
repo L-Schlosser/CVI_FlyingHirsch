@@ -22,11 +22,17 @@ def check(img_dir, lbl_dir):
 if __name__ == "__main__":
     print("raw:")
     check(
-        "datasets/raw/images/train",
-        "datasets/raw/labels/train"  
+        "datasets/annotated/images/train",
+        "datasets/annotated/labels/train"  
     )
-    print("processed:")
-    check(
-        "datasets/processed/images/train",
-        "datasets/processed/labels/train"  
-    )
+
+    # print("raw:")
+    # check(
+    #     "datasets/raw/images/train",
+    #     "datasets/raw/labels/train"  
+    # )
+    # print("processed:")
+    # check(
+    #     "datasets/processed/images/train",
+    #     "datasets/processed/labels/train"  
+    # )
