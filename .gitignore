@@ -45,3 +45,7 @@ karim/runs/detect/train
 karim/runs/detect/track
 runs/detect
 karim/runs
+
+*/datasets
+*/datasets_better_thermal
+*/runs/detect
