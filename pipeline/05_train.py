@@ -5,7 +5,7 @@ import torch.nn as nn
 
 from ultralytics import YOLO
 
-from config import PROFILE, PROFILES, TRAIN_PLOTS, best_weights, run_name
+from config import PROFILE, PROFILES
 from config import BEST_WEIGHTS, MODEL_NAME
 
 
@@ -13,15 +13,15 @@ def build_train_args(name_addition:str|None = None):
     return dict(
         data="data/alfs.yaml",
         epochs=100,
-        patience=30,
+        patience=20,
         imgsz=1024,
         batch=4,
         device=0,              # equivalent to "cuda"
         workers=8,
         amp=True,
 
-        optimizer="AdamW",
-        lr0=0.005,
+        optimizer="MuSGD",
+        lr0=0.0050,
         lrf=0.1,
         weight_decay=0.0005,
 
@@ -49,7 +49,7 @@ def build_train_args(name_addition:str|None = None):
 
         save_period=10,
         project="train",
-        name="yolo26l_annotated" + (f"_{name_addition}" if name_addition else ""),
+        name=MODEL_NAME + (f"_{name_addition}" if name_addition else ""),
         save=True,
     )
 
