@@ -9,8 +9,7 @@ track_buffer: 60         # Increased: drone jumps can cause temporary loss
 match_thresh: 0.95        # Increased: stricter matching to avoid ID switches
 proximity_thresh: 0.7
 appearance_thresh: 0.25
-with_reid: False          # Set False if your thermal images are too noisy for ReID
-# cmc_method: 'ecc'        # 'ecc' is generally more robust for thermal than 'sparseOptFlow' 
+with_reid: False          # False -> thermal images are too noisy for ReID
 model: auto
 fuse_score: True
-gmc_method: None        # 'ecc' is generally more robust for thermal than 'sparseOptFlow'
+gmc_method: None

@@ -68,7 +68,6 @@ TEST_SOURCE = "datasets/processed/images/test2"
 
 
 ##BEST WEIGHTS:
-# BEST_WEIGHTS = "best_weights/best_LORENZ.pt"
 BEST_WEIGHTS = "best_weights/best.pt"
 
 MODEL_NAME = "yolo26l_annotated"

@@ -1,13 +1,12 @@
 path: datasets/annotated
 
-train: images/train #add 2
+train: images/train
 val: images/val
 test: images/test
 
-# nc: 12 # number of classes
-# nc: 8
-nc : 1  #second approach
-# ch : 1
+
+nc : 1 
+
 
 names:
   0: animal #no animal
@@ -28,7 +27,7 @@ names:
 
 
 # nc: 75
-
+# -- Convert class names to numbers
 # names:
 #   0: Q10738-0-0-0
 #   1: Q10738-0-0-1
@@ -107,6 +106,7 @@ names:
 #   74: Q602666-0-2-1
 
 
+#-- Convert label to animal class only
 # numbers:
 #   0: 0
 #   1: 0
