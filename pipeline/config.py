@@ -1,61 +1,22 @@
 from pathlib import Path
 
-DATA_PATH = Path(__file__).parent / ".." / "datasets" / "raw"
+PROJECT_ROOT = Path(__file__).parents[1]
+PIPELINE_DIR = Path(__file__).parent
+
+DATA_PATH = PROJECT_ROOT / "datasets"
+DATA_PATH_RAW = DATA_PATH / "raw"
+DATA_PATH_PROCESSED = DATA_PATH / "processed"
 IMAGES_SUBDIR = "images"
 LABELS_SUBDIR = "labels"
 
+ALFS_SUBDIR = "alfs_data"
+THERMAL_SUBDIR = "thermal_data"
+RGB_SUBDIR = "rgb_data"
+ANNOTATED_IMAGES_SUBDIR = "annotated_thermal"
+
+
 KEEP_BACK_PERCENT = 0.2 # keep 20% of images without labels, remove 80%
 BLURRY_THRESHOLD = 0.3 # threshold for blurry image detection, higher means more blurry images will be removed
-
-PROFILE = "balanced"  # "fast" | "balanced" | "quality"
-
-PROFILES = {
-    "fast": {
-        "weights": "yolo26s.pt",
-        "imgsz": 640,
-        "batch": 16,
-        "epochs": 80,
-        "patience": 20,
-        "mosaic": 0.3,
-        "mixup": 0.0,
-        "copy_paste": 0.0,
-        "erasing": 0.0,
-        "degrees": 10.0,
-        "translate": 0.05,
-        "scale": 0.35,
-        "close_mosaic": 10,
-    },
-    "balanced": {
-        "weights": "yolo26m.pt",
-        "imgsz": 1024,
-        "batch": 4,
-        "epochs": 120,
-        "patience": 30,
-        "mosaic": 0.5, #0.35
-        "mixup": 0.05,
-        "copy_paste": 0.0, #0.1
-        "erasing": 0.1,
-        "degrees": 15.0,
-        "translate": 0.08,
-        "scale": 0.4,
-        "close_mosaic": 15,
-    },
-    "quality": {
-        "weights": "yolo26l.pt",
-        "imgsz": 1024,
-        "batch": 5,
-        "epochs": 150,
-        "patience": 40,
-        "mosaic": 0.4,
-        "mixup": 0.05,
-        "copy_paste": 0.15,
-        "erasing": 0.1,
-        "degrees": 15.0,
-        "translate": 0.08,
-        "scale": 0.45,
-        "close_mosaic": 15,
-    },
-}
 
 # Training plots (val_batch0_labels.jpg, val_batch0_pred.jpg, results.png, etc.)
 TRAIN_PLOTS = False  # set False to save ~1-2 min/epoch
@@ -70,23 +31,20 @@ SAHI_OVERLAP = 0.25
 SAHI_CONF = 0.15
 SAHI_USE_CLAHE = True  # contrast boost per tile at inference only
 
-DATA_YAML = "data/alfs.yaml"
-TEST_SOURCE = "datasets/annotated/images/test"
+ANNOTATED_DATASET_PATH = DATA_PATH_PROCESSED / ANNOTATED_IMAGES_SUBDIR
+THERMAL_DATASET_PATH = DATA_PATH_PROCESSED / THERMAL_SUBDIR
+THERMAL_IMAGES_PATH = THERMAL_DATASET_PATH / IMAGES_SUBDIR
+DATA_YAML = ANNOTATED_DATASET_PATH / "data.yaml"
+PREDICT_SOURCE = THERMAL_IMAGES_PATH / "test2"
 
-
-##BEST WEIGHTS:
-BEST_WEIGHTS = "best_weights/best.pt"
-
-MODEL_NAME = "yolo26s_annotated"
-
-def run_name(profile: str | None = None) -> str:
-    profile = profile or PROFILE
-    weights = PROFILES[profile]["weights"].replace(".pt", "_pt")
-    return f"{weights}_{profile}_Annotated"
-
-
-def best_weights(profile: str | None = None) -> str:
-    # return f"runs/detect/train/{run_name(profile)}/weights/best.pt"
-    return f"best_weights/best.pt"
-
-
+RUNS_DIR = PIPELINE_DIR / "runs"
+YOLO_RUNS_DIR = RUNS_DIR / "detect"
+VALIDATION_RUNS_DIR = YOLO_RUNS_DIR / "validate"
+PREDICT_RUNS_DIR = YOLO_RUNS_DIR / "predict"
+TRACK_SOURCE = THERMAL_IMAGES_PATH / "test2"
+TRACK_RUNS_DIR = YOLO_RUNS_DIR / "track"
+TRACKER_CONFIG = PIPELINE_DIR / "trackers" / "botsort.yaml"
+YOLO_EXPERIMENT_NAME = "ir_animal_detection"
+BEST_WEIGHTS_DIR = PIPELINE_DIR / "best_weights"
+BEST_WEIGHTS = BEST_WEIGHTS_DIR / "best.pt"
+MODEL_NAME = YOLO_EXPERIMENT_NAME

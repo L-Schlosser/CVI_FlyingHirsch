@@ -38,9 +38,10 @@ documentation below follows exactly this order:
 6. **Visualize Results**
 
 The implementation lives in the `pipeline/` folder. Scripts are numbered to match the
-pipeline order (`01_check_dataset.py`, `02_convert_labels.py`, `03_*exploration`,
-`04_*preprocessing`, `05_train.py`, `06_validate.py`, `07_predict.py`,
-`08_tracking.py`, `09_*visualization`).
+pipeline order (`01_download.py`, `02_check_dataset.py`, `03_convert_labels.py`,
+`03b_copy_data_one_class.py`, `04_*exploration`, `05_preprocessing.ipynb`,
+`06_exploration_annotated.ipynb`, `07_train_yolo.py`, `08_validate.py`,
+`09_predict.py`, `09b_*visualization`, `10_tracking.py`, `10b_*visualization`).
 
 ---
 
@@ -70,16 +71,16 @@ ultimately collapsed everything into a **single `animal` class**. Also we used t
 | Min / Avg / Max animal area | 21 px² / 1,922 px² / 61,620 px² |
 
 **Scripts used in this stage**
-- `01_check_dataset.py` - sanity check that every image has a matching label file and reports how many are missing.
-- `02_convert_labels.py` - remaps the original 75 fine-grained species IDs down to coarser classes (and finally to a single class), rewriting the YOLO `.txt` labels in place.
-- `03_exploration_ALFS.ipynb` / `03_exploration.ipynb` - notebooks that explore label distributions, box sizes and image quality for each dataset.
-- `utils/copy_data_oneClass.py` - reproduces the *exact same* train/val/test split from the old ALFS dataset on the new BAMBI data, so results stay comparable across dataset switches.
+- `02_check_dataset.py` - sanity check that every image has a matching label file and reports how many are missing.
+- `03_convert_labels.py` - remaps the original 75 fine-grained species IDs down to coarser classes (and finally to a single class), rewriting the YOLO `.txt` labels in place.
+- `04_exploration_ALFS.ipynb` / `04_exploration.ipynb` - notebooks that explore label distributions, box sizes and image quality for each dataset.
+- `03b_copy_data_one_class.py` - reproduces the *exact same* train/val/test split from the old ALFS dataset on the new BAMBI data, so results stay comparable across dataset switches.
 
 ### 2. Data Preprocessing & Annotation
 
 Raw thermal frames are noisy, so we clean and normalize them before training. The
 core helpers live in `utils/preprocess_methods.py` and are driven from
-`04_preprocessing.ipynb` (with `04b_exploration_annotated.ipynb` to inspect the
+`05_preprocessing.ipynb` (with `06_exploration_annotated.ipynb` to inspect the
 result).
 
 **Cleaning** - frames and labels are dropped when they are not usable:
@@ -91,7 +92,7 @@ result).
 image to the full 0–255 range. This boosts contrast and makes faint animals far more
 visible.
 
-**Splitting** - We used a utils file (copy_data_oneClass.py) to initialize the split by copying the original split, but the original split included too little images in the val set. Therefore we **corrected the split based on flight ID**, so frames from one flight stay together and we don't have any data leakage.
+**Splitting** - We used `03b_copy_data_one_class.py` to initialize the split by copying the original split, but the original split included too little images in the val set. Therefore we **corrected the split based on flight ID**, so frames from one flight stay together and we don't have any data leakage.
 
 **Re-annotation with Roboflow** - the original labels were not sufficient for a good accuracy of the model, so we manually
 re-annotated **~9,338 images** (train + val) in Roboflow: removed wrong boxes,
@@ -103,7 +104,7 @@ annotation for better insight into what each thermal blob actually was.
 **Goal:** reliably detect animals in low-contrast thermal drone images.
 
 We use **Ultralytics YOLO** (YOLO26) as the detector. Initially we also tested everything with YOLO11. All shared settings live in
-`config.py` and `05_train.py` runs the actual training.
+`config.py` and `07_train_yolo.py` runs the actual training.
 
 #### Configuration - `config.py`
 
@@ -138,7 +139,7 @@ SAHI_USE_CLAHE  = True
 
 DATA_YAML    = "data/alfs.yaml"
 TEST_SOURCE  = "datasets/annotated/images/test"
-BEST_WEIGHTS = "best_weights/best.pt"
+BEST_WEIGHTS = "runs/detect/ir_animal_detection/weights/best.pt"
 MODEL_NAME   = "yolo26s_annotated"
 ```
 
@@ -148,7 +149,7 @@ frame is cut into overlapping tiles so tiny animals stay large enough to detect.
 helper functions `run_name()` and `best_weights()` build consistent run/output names
 from the active profile.
 
-#### Training script - `05_train.py`
+#### Training script - `07_train_yolo.py`
 
 `build_train_args()` returns the full set of YOLO training arguments. The most
 important choices for thermal data are highlighted:
@@ -234,7 +235,7 @@ dataset and (6) fixing the annotations.
 ### 4. Train Object Tracking
 
 **Goal:** follow each detected animal across a thermal image sequence with a
-persistent ID - despite the drone constantly moving. Implemented in `08_tracking.py`.
+persistent ID - despite the drone constantly moving. Implemented in `10_tracking.py`.
 
 Because the camera moves, naive tracking would confuse camera motion with animal
 motion. The pipeline solves this in stages:
@@ -257,7 +258,7 @@ movement*, not camera drift.
 
 ### 5. Evaluate Model & Create Statistics
 
-`06_validate.py` runs YOLO's validation on the held-out split using our best weights
+`08_validate.py` runs YOLO's validation on the held-out split using our best weights
 and writes metrics + plots to `runs/detect/validate/`.
 
 **Best model performance:**
@@ -296,7 +297,7 @@ Side-by-side validation batches show the labels (top) against the model's predic
 
 ![Model predictions](../pipeline/runs/detect/validate/validation_yolo26s_annotated/val_batch0_pred.jpg)
 
-`07_predict.py` additionally runs **SAHI sliced inference** with optional CLAHE
+`09_predict.py` additionally runs **SAHI sliced inference** with optional CLAHE
 contrast boost on the test images, which helps recover very small or faint animals
 that a single full-frame pass would miss:
 
@@ -317,8 +318,8 @@ recent path on the stabilized frames. Below, one sequences (`track_276`) show st
 Full results - including the stabilized frames, overlay videos
 (`tracking_overlay_video.mp4`), trajectory videos and the `trajectories.json` /
 `trajectories.txt` exports - are saved per sequence under
-`runs/detect/track/`. The notebooks `09_10_visualizeTracking.ipynb` and
-`09_276_visualizeTracking.ipynb` render these trajectories per flight.
+`runs/detect/track/`. The notebooks `10b_10_visualizeTracking.ipynb` and
+`10b_276_visualizeTracking.ipynb` render these trajectories per flight.
 
 ---
 
