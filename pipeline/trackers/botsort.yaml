@@ -2,14 +2,19 @@
 # GMC is off — camera motion is already removed during stabilization.
 
 tracker_type: botsort
-track_high_thresh: 0.3
-track_low_thresh: 0.1
-new_track_thresh: 0.4    # Lowered: keeps track alive through thermal flicker
-track_buffer: 45          # 45 frames at 3 FPS is 15 seconds of memory window
-match_thresh: 0.75        # Tighten to prevent distant objects from stealing IDs
-proximity_thresh: 0.7
-appearance_thresh: 0.0    # Absolute zero to force motion-only tracking
-with_reid: False          # False -> thermal images are too noisy for ReID
-model: auto
-fuse_score: True
-gmc_method: None
+track_high_thresh: 0.25 # (float) First-stage match threshold; raise for cleaner tracks, lower to keep more
+track_low_thresh: 0.1 # (float) Second-stage threshold for low-score matches; balances recovery vs drift
+new_track_thresh: 0.25 # (float) Start a new track if no match ≥ this; higher reduces false tracks
+
+track_buffer: 30 # (int) Frames to keep lost tracks alive; higher handles occlusion, increases ID switches risk
+match_thresh: 0.95 # (float) Association similarity threshold (IoU/cost); tune with detector quality
+fuse_score: True # (bool) Fuse detection score with motion/IoU for matching; stabilizes weak detections
+
+# BoT-SORT specifics
+gmc_method: sparseOptFlow # (str) Global motion compensation: sparseOptFlow|orb|sift|ecc|none; helps moving camera scenes
+
+# ReID model related thresh
+proximity_thresh: 0.5 # (float) Min IoU to consider tracks proximate for ReID; higher is stricter
+appearance_thresh: 0.8 # (float) Min appearance similarity for ReID; raise to avoid identity swaps
+with_reid: False # (bool) Enable ReID model use; needs extra model and compute
+model: auto # (str) ReID model name/path; "auto" uses detector features if available
