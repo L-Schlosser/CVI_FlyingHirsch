@@ -292,7 +292,7 @@ contrast boost on the test images from `datasets/processed/thermal_data/images/t
 which helps recover very small or faint animals that a single full-frame pass would
 miss. A sample subset is saved to `runs/detect/predict/SAMPLESPACE_ir_animal_detection/`:
 
-![SAHI prediction on a thermal test frame](../pipeline/runs/detect/predict/SAMPLESPACE_ir_animal_detection/55_4894.jpg)
+![SAHI prediction on a thermal test frame](../pipeline/runs/detect/predict/SAMPLESPACE_yolo26s_annotated/55_4794.jpg)
 
 #### Tracking - IDs & Trajectories
 
@@ -302,11 +302,10 @@ shows stable IDs and clean trajectory trails after stabilization, a heatmap and 
 the total distance traveled per ID.
 
 
-![Tracking overlay - animal with trajectory trail](../pipeline/runs/detect/track/track_ir_animal_detection_276_test2/trajectories_on_reference.png)
+![Tracking overlay - animal with trajectory trail](../pipeline/runs/detect/track/track_yolo26s_annotated_276_BEST/trajectories_on_reference.png)
+![Heatmap](../pipeline/runs/detect/track/track_yolo26s_annotated_276_BEST/trajectory_density_heatmap.png)
 
-![Heatmap](../pipeline/runs/detect/track/track_ir_animal_detection_276_test2/trajectory_density_heatmap.png)
-
-![Total distance traveled per id in px](../pipeline/runs/detect/track/track_ir_animal_detection_276_test2/distance_traveled.png)
+![Total distance traveled per id in px](../pipeline/runs/detect/track/track_yolo26s_annotated_276_BEST/distance_traveled.png)
 
 Full results - including the stabilized frames, overlay videos
 (`tracking_overlay_video.mp4`), trajectory videos and the `trajectories.json` /
