@@ -28,24 +28,34 @@ source .venv/bin/activate
 pip install -r pipeline/requirements.txt
 ```
 
-4. **Download the dataset** from Zenodo: https://zenodo.org/records/20728879
+4. **Download the dataset** 
 
-   Unzip it into `datasets/` so the structure looks like:
+To download and extract the dataset execute: `piepline/01_download.py`
 
-```text
-datasets/
-├── raw/
-│   ├── alfs_data/
-│   ├── rgb_data/
-│   └── thermal_data/
-└── processed/
-    ├── annotated_thermal/
-    └── thermal_data/
-```
+>LINK to dataset: https://zenodo.org/records/20728879
+
 
 Commands can be run from the project root. Shared paths are configured in `pipeline/config.py`.
 
-## Usage
+
+## Usage - start from already preprocessed data
+
+These are the steps to reproduce all the outputs / required tasks.
+
+| Step | Command | What it does |
+| --- | --- | --- |
+| 1. Download dataset | `python pipeline/01_download.py` | Downloads the raw dataset assets. |
+| 2. Check dataset | `python pipeline/02_check_dataset.py` | Verifies dataset files and structure. |
+| 3. Train detector | `python pipeline/07_train_yolo.py` | Trains the YOLO animal detector and saves the best checkpoint. |
+| 4. Validate | `python pipeline/08_validate.py` | Computes metrics on the validation split. |
+| 5. Predict | `python pipeline/09_predict.py` | Runs SAHI sliced inference on the processed thermal test images. |
+| 6. Visualize predictions | open `pipeline/09b_visualizePrediction.ipynb` | Samples and displays prediction outputs. |
+| 7. Track | `python pipeline/10_tracking.py` | Stabilizes frames and tracks animals across a sequence. |
+| 8. Visualize tracking | open `pipeline/10b_10_visualizeTracking.ipynb` / `pipeline/10b_276_visualizeTracking.ipynb` | Visualizes trajectories for flight IDs 10 and 276. |
+
+## Usage - start from zero:
+
+These are the steps if you want to start the project from zero. So also download the original unpreprocessed dataset and do all the steps.
 
 Run the steps in order. Each script builds on the output of the previous one.
 
@@ -62,6 +72,8 @@ Run the steps in order. Each script builds on the output of the previous one.
 | 9. Visualize predictions | open `pipeline/09b_visualizePrediction.ipynb` | Samples and displays prediction outputs. |
 | 10. Track | `python pipeline/10_tracking.py` | Stabilizes frames and tracks animals across a sequence. |
 | 11. Visualize tracking | open `pipeline/10b_10_visualizeTracking.ipynb` / `pipeline/10b_276_visualizeTracking.ipynb` | Visualizes trajectories for flight IDs 10 and 276. |
+
+
 
 ## Notes
 
