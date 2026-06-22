@@ -109,45 +109,14 @@ We use **Ultralytics YOLO** (YOLO26) as the detector. Initially we also tested e
 #### Configuration - `config.py`
 
 `config.py` centralizes everything so the other scripts stay clean. The key idea is
-three **training profiles** (`fast`, `balanced`, `quality`) that trade speed against
-accuracy by swapping the model size, image resolution and augmentation strength:
+to make a single point of change available. It contains:
 
-```python
-PROFILE = "balanced"  # "fast" | "balanced" | "quality"
-
-PROFILES = {
-    "fast": {
-        "weights": "yolo26s.pt", "imgsz": 640,  "batch": 16, "epochs": 80,  ...
-    },
-    "balanced": {
-        "weights": "yolo26m.pt", "imgsz": 1024, "batch": 4,  "epochs": 120, ...
-    },
-    "quality": {
-        "weights": "yolo26l.pt", "imgsz": 1024, "batch": 5,  "epochs": 150, ...
-    },
-}
-
-# Validation at native resolution
-VAL_IMGSZ = 1024
-VAL_BATCH = 8
-
-# SAHI tiled inference - tuned for ~15-40 px animals in 1024x1024 thermal frames
-SAHI_SLICE_SIZE = 512
-SAHI_OVERLAP    = 0.25
-SAHI_CONF       = 0.15
-SAHI_USE_CLAHE  = True
-
-DATA_YAML    = "data/alfs.yaml"
-TEST_SOURCE  = "datasets/annotated/images/test"
-BEST_WEIGHTS = "runs/detect/ir_animal_detection/weights/best.pt"
-MODEL_NAME   = "yolo26s_annotated"
-```
-
-
-The `SAHI_*` values configure **sliced inference** (used in prediction): each large
-frame is cut into overlapping tiles so tiny animals stay large enough to detect. The
-helper functions `run_name()` and `best_weights()` build consistent run/output names
-from the active profile.
+- Paths — project/dataset folders, output dirs and the model weights path
+- Preprocessing settings
+- Training/validation settings
+- Prediction settings (SAHI) 
+- Tracking settings
+- Model name
 
 #### Training script - `07_train_yolo.py`
 
